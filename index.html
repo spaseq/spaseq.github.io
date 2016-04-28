@@ -84,13 +84,13 @@ SPAseq Query Language
 <div id='overview'><a name='overview'></a>
 
  <h1> Overview</h1>
-  <p> Our goal is to make both offline and online application of CGPM as simple as possible for other users. This allows them to easily apply CGPM to their own data streams and facilitates reproduction of our evaluation. Therefore, we provide an easy-to-run executable of our event-based and incremental implementation: </p>
+  <p> Our goal is to make both offline and online application of SPAseq as simple as possible for other users. This allows them to easily apply SPAseq to their own data streams and facilitates reproduction of our evaluation. Therefore, we provide an easy-to-run executable of our event-based and incremental implementation: </p>
 
 <p>We have implemented our system in Java, which means it can simply be run on the Java Virtual Machine <b>(requirement: 64-bit JDK 8 or higher version)</b>. We wanted to make sure that users do not have to install any third party libraries. Therefore, we have packaged our system with all necessary dependencies including the complete query parser, input file parser and both query engines. This explains the large size of the JAR. Our system accept the input stream file of the Nx format, where x = Triples, Quads, or any other number. For more details see the specification for the <a href="https://www.w3.org/TR/n-quads/">NQuads format</a>, a extension for the <a href="http://www.w3.org/TR/rdf-testcases/#ntriples">N-Triples</a> RDF format. Note that the parser handles any combination (cf. <a href="http://www.w3.org/TR/rdf11-concepts/#section-generalized-rdf">generalised triples</a> or number of N-Triples syntax terms on each line (the number of terms per line can also vary). 
 
 </p>
 
-<p> The downloaded folder contains the followings: (i) a jar <a href="./" >file</a>, (ii) a <a href="./testData/" >folder</a> containing the testData, (iii) a <a href="./testQueries/" >folder</a>  containing the test queries, and (iv) a  <a href="./result/" >folder</a> to store the matched results <br>
+<p> Currently we provide the following file: (i) a jar <a href="./" >file</a>, (ii) a <a href="./testData/" >folder</a> containing the testData, (iii) a <a href="./testQueries/" >folder</a>  containing the test queries, and (iv) a  <a href="./result/" >folder</a> to store the matched results <br>
 
   Our implementation is a command-line application with the following usage:</p>
 <p><code>Usage: java -jar spaseq.jar [-es &#60;INT&#62;] [-et &#60;INT&#62;] [-f &#60;STRING&#62;] [-q &#60;STRING&#62;] [-w &#60;INT&#62;]<br>
@@ -114,7 +114,7 @@ SPAseq Query Language
 
 
 
-<p><br>An Example of the usage is as follows:<br> <code>java -jar cgpm.jar -es 1000 -et 1 -f /home/user/testData/snb.nt -q /home/user/testQueries/SNBQ1.q -w 5</code></p>
+<p><br>An Example of the usage is as follows:<br> <code>java -jar spaseq.jar -s /home/user/testData/streamset.stream -q /home/user/testQueries/SHDQ1.q -st true</code></p>
 
 <p> The first option describes how many triples should be parsed into one event. The second option describes if the streams are processed with event-based processing model or with incremental one. Then we have paths for the input file and query, finally the window option describe the size of the window in seconds. The output matches are stored in the <code>./result/queryResult1.txt</code>. The folder named <code>./result</code> should be placed in the same directory of the jar </p>
 <p>Note:  For large reservoir sizes, it makes sense to increase the JVM heap size (eg. <code>-Xmx4096M</code>) and use a concurrent garbage collector (<code>-XX:+UseConcMarkSweepGC</code>) since the concept of repeated creation/destroying of event-data may pose a challenge to garbage collection.
