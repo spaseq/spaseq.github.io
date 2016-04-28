@@ -114,7 +114,7 @@ SPAseq Query Language
 
 
 
-<p><br>An Example of the usage is as follows:<br> <code>java -jar spaseq.jar -s /home/user/testData/streamset.stream -q /home/user/testQueries/SHDQ1.q -st true</code></p>
+<p><br>An Example of the usage is as follows:<br> <code>java -jar spaseq.jar -s ./streamset.stream -q ./SHDQ1.q -st true</code></p>
 
 <p> The first option describes how many triples should be parsed into one event. The second option describes if the streams are processed with event-based processing model or with incremental one. Then we have paths for the input file and query, finally the window option describe the size of the window in seconds. The output matches are stored in the <code>./result/queryResult1.txt</code>. The folder named <code>./result</code> should be placed in the same directory of the jar </p>
 <p>Note:  For large reservoir sizes, it makes sense to increase the JVM heap size (eg. <code>-Xmx4096M</code>) and use a concurrent garbage collector (<code>-XX:+UseConcMarkSweepGC</code>) since the concept of repeated creation/destroying of event-data may pose a challenge to garbage collection.
