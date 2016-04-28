@@ -93,13 +93,16 @@ SPAseq Query Language
 <p> Currently we provide the following files: (i) a jar <a href="./" >file</a>, (ii) a <a href="./testData/" >folder</a> containing the testData, (iii) a <a href="./testQueries/" >folder</a>  containing the test queries, and (iv) a  <a href="./result/" >folder</a> to store the matched results <br>
 
   Our implementation is a command-line application with the following usage:</p>
-<p><code>Usage: java -jar spaseq.jar [-es &#60;INT&#62;] [-et &#60;INT&#62;] [-f &#60;STRING&#62;] [-q &#60;STRING&#62;] [-w &#60;INT&#62;]<br>
+<p><code>Usage: java -jar spaseq.jar [-f &#60;STRING&#62;] [-q &#60;STRING&#62;] [-st &#60;String&#62;]<br>
 
+
+
+
+ -st,--streamtype &#60;arg&#62;    Stream type, true: for random generation of events, false: for sequential-based generation<br>
 
 
  -f,--file &#60;arg&#62;         Paths and prefixes of input stream files located in .stream file<br>
 
- -st,--evalType &#60;arg&#62;    Stream type, true: for random generation of events, false: for sequential-based generation<br>
 
  -h,--help               show help<br>
 
@@ -113,9 +116,7 @@ SPAseq Query Language
 
 <p><br>An Example of the usage is as follows:<br> <code>java -jar spaseq.jar -s /home/user/testData/streamset.stream -q /home/user/testQueries/SHDQ1.q -st true</code></p>
 
-<p> The first option describes the file containing the prefixes and the path of the streamset files. 
-The second option describes if the streams are produced sequentially (false) or randomaly (true). 
-Then we have paths for the query file. The output matches are stored in the <code>./result/queryResult1.txt</code>. The folder named <code>./result</code> should be placed in the same directory of the jar file</p>
+<p> The first option describes how many triples should be parsed into one event. The second option describes if the streams are processed with event-based processing model or with incremental one. Then we have paths for the input file and query, finally the window option describe the size of the window in seconds. The output matches are stored in the <code>./result/queryResult1.txt</code>. The folder named <code>./result</code> should be placed in the same directory of the jar </p>
 <p>Note:  For large reservoir sizes, it makes sense to increase the JVM heap size (eg. <code>-Xmx4096M</code>) and use a concurrent garbage collector (<code>-XX:+UseConcMarkSweepGC</code>) since the concept of repeated creation/destroying of event-data may pose a challenge to garbage collection.
 <p>
 
