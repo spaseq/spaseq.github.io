@@ -1,0 +1,30 @@
+?house1 http://www.smart.com/power#houseC   [3633000,2786000]  
+?watt1 375.2
+
+?p1 34.98861718034252
+
+?house1 http://www.smart.com/power#houseC 
+?watt2 12.6078
+
+?p2 30.234364184884672
+
+?house1 http://www.smart.com/power#houseC   [5127000,4637000]  
+?watt1 375.2
+
+?p1 34.98861718034252
+
+?house1 http://www.smart.com/power#houseC 
+?watt2 12.6078
+
+?p2 30.234364184884672
+
+?house1 http://www.smart.com/power#houseC   [5970000,5411000]  
+?watt1 373.9
+
+?p1 32.22947245672444
+
+?house1 http://www.smart.com/power#houseC 
+?watt2 12.6078
+
+?p2 31.46465722874301
+
