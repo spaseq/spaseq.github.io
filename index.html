@@ -69,6 +69,7 @@ SPAseq Query Language
         <ul>
           <li><a href="index.html#overview">Overview</a></li>
           <li><a href="./docfiles/tc-stream-processing.pdf">Technical Report</a></li>
+           <li><a href="index.html#spsources">SPAseq Sources</a></li>
           <li><a href="index.html#grammar">Grammar</a></li>
           <li><a href="index.html#dataset">Dataset Generator</a></li>
           <li><a href="index.html#experiments">Experiments</a></li>
@@ -197,7 +198,7 @@ Filter (?statusC = ‘To be used’^^xsd:string)<br>
 <h1>Un-supported Features</h1>
 <p>Currently we do not support the <tt>UNION</tt>, <tt>OPTIONAL</tt> features for GPM expressions. Aggregates are allowed in SPAseq, however, we are currently working on it efficient implementation. For future version, we are also considering to allow hetergenous static background sources for the set of GPM expressions. Furthermore, additional operators for sequence expressions, such as AND (<tt>SEQ (A, (B&#8743;C),D)</tt>) and OR (<tt>SEQ (A,(B&#8744;C),D)</tt>) will be supported in the next version.</p>
 
-
+<div align="justify" id='spsources'><a name='spsources'></a>
 <h1> SPAseq Sources</h1>
 <p>We have implemented our system in Java, which means it can simply be run on the Java Virtual Machine <b>(requirement: 64-bit JDK 8 or higher version)</b>. We wanted to make sure that users do not have to install any third party libraries. Therefore, we have packaged our system with all necessary dependencies including the complete query parser, input file parser and both query engines. This explains the large size of the JAR. Our system accept the input stream file of the Nx format, where x = Triples, Quads, or any other number. For more details see the specification for the <a href="https://www.w3.org/TR/n-quads/">NQuads format</a>, a extension for the <a href="http://www.w3.org/TR/rdf-testcases/#ntriples">N-Triples</a> RDF format. Note that the parser handles any combination (cf. <a href="http://www.w3.org/TR/rdf11-concepts/#section-generalized-rdf">generalised triples</a> or number of N-Triples syntax terms on each line (the number of terms per line can also vary).
 
@@ -233,7 +234,7 @@ Filter (?statusC = ‘To be used’^^xsd:string)<br>
 <p>Note:  For large reservoir sizes, it makes sense to increase the JVM heap size (eg. <code>-Xmx4096M</code>) and use a concurrent garbage collector (<code>-XX:+UseConcMarkSweepGC</code>) since the concept of repeated creation/destroying of event-data may pose a challenge to garbage collection.
 <p>
 
-
+</div>
 
 </div>
 
