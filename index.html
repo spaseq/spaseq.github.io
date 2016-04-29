@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <!-- saved from url=(0033)https://mlafeldt.github.io/about/ -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us" hola_ext_inject="disabled"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
+
   <script type="text/javascript" async="" src="./docfiles/ga.js"></script><script type="text/javascript">
     var enforce = "xcv";
     if ((enforce == window.location.host) && (window.location.protocol != "https:"))
       window.location.protocol = "https";
   </script>
-  
+
 
   <meta charset="utf-8">
   <title>
-    
+
 SPAseq Query Language
   </title>
 
   <meta name="author" content="cgpm">
   <meta name="description" content="SPAseq">
 
-  
+
   <link rel="stylesheet" href="./docfiles/base.css" type="text/css" media="screen, projection">
   <link rel="stylesheet" href="./docfiles/pygments.css" type="text/css">
   <link media="only screen and (max-device-width: 480px)" href="./docfiles/iphone.css" type="text/css" rel="stylesheet">
@@ -27,7 +27,7 @@ SPAseq Query Language
 
  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 
-  
+
   <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-37141557-1']);
@@ -47,12 +47,12 @@ SPAseq Query Language
 <body>
   <div id="container">
     <section class="sidebar">
-     
+
         <img src="./docfiles/cgpm.png" height="100" width="100" class="avatar">
       </a>
 
       <section class="name">
-       
+
           <span id="fname"></span>
           <span id="lname"></span>
         </a>
@@ -60,11 +60,11 @@ SPAseq Query Language
 
        <section class="meta">
         <a href="" target="_blank"><img src="./docfiles/github.png"></a>
-      
-       
+
+
       </section>
 
-      
+
       <section class="sections">
         <ul>
           <li><a href="index.html#overview">Overview</a></li>
@@ -79,14 +79,128 @@ SPAseq Query Language
 
     <section class="content">
   <h1>SPAseq: Semantic Complex Event Processing over RDF Graph Streams</h1>
- 
 
-<div id='overview'><a name='overview'></a>
+
+<div align="justify" id='overview'><a name='overview'></a>
 
  <h1> Overview</h1>
+<<<<<<< Updated upstream
   <p> Our goal is to make both offline and online application of SPAseq as simple as possible for other users. This allows them to easily apply SPAseq to their own data streams and facilitates reproduction of our evaluation. Therefore, we provide an easy-to-run executable of our event-based and incremental implementation: </p>
+=======
+  <p> Our goal is to make both offline and online application of SPAseq as simple as possible for other users. This allows them to easily apply SPAseq to their own data streams and facilitates reproduction of our evaluation. Therefore, we provide an easy-to-run executable of SPAseq. The source code of our system will be avialable after the reviewing process.</p>
 
-<p>We have implemented our system in Java, which means it can simply be run on the Java Virtual Machine <b>(requirement: 64-bit JDK 8 or higher version)</b>. We wanted to make sure that users do not have to install any third party libraries. Therefore, we have packaged our system with all necessary dependencies including the complete query parser, input file parser and both query engines. This explains the large size of the JAR. Our system accept the input stream file of the Nx format, where x = Triples, Quads, or any other number. For more details see the specification for the <a href="https://www.w3.org/TR/n-quads/">NQuads format</a>, a extension for the <a href="http://www.w3.org/TR/rdf-testcases/#ntriples">N-Triples</a> RDF format. Note that the parser handles any combination (cf. <a href="http://www.w3.org/TR/rdf11-concepts/#section-generalized-rdf">generalised triples</a> or number of N-Triples syntax terms on each line (the number of terms per line can also vary). 
+  <h1> Supported Features</h1>
+  <p>In our paper, we briefly dicussed all the supported feature of our language; here we describe them with complete examples and uses cases.  </p>
+<h3>V-Shaped Pattern</h3>
+  <i> A query with V-shaped temporal pattern describes the sequence of values that go down to a local minimum, then rising up to a local maximum, which was higher than the starting value.</i><br><br>
+
+This uses case was described in detail in pur paper, here we use the stock-marked based query to showcase how it is written in SPAseq.<br>
+<h4> Query 1 </h4>
+<code>
+
+                        prefix c: &#60;http://example/company#&#62 <br>
+
+                        prefix pred: &#60;http://example/&#62<br>
+
+                      SELECT ?company ?p1 ?p2 ?p3 ?vol1 ?vol2 ?vol3 <br>
+                         WITHIN 10 SECONDS <br>
+                      partition by (?company)  <br>
+                 FROM STREAM S1 &#60;http://example.org/main&#62 <br>
+
+                        WHERE <br>
+                         SEQ (A, B, C)<br>
+                           {<br>
+              DEFINE GPM A ON S1<br>
+
+                 { <br>
+                        ?company pred:price ?p1.<br>
+                          ?company pred:volume ?vol1. <br>
+
+                         } <br>
+
+
+                                DEFINE GPM B ON S1<br>
+
+                  {<br>
+
+                          ?company pred:price ?p2.<br>
+                          ?company pred:volume ?vol2. <br>
+
+                             Filter (?p2 < ?p1 )<br>
+
+                             }<br>
+
+
+
+                                DEFINE GPM C ON S1<br>
+
+                  {<br>
+
+                          ?company pred:price ?p3.<br>
+                          ?company pred:volume ?vol3. <br>
+
+                            Filter (?p3 > ?p2 && ?p3 > ?p1).  <br>
+                             }<br>
+
+
+              }<br>
+
+</code><br>
+
+<p> The Query 1 showcase three important features of the SPAseq: first, the stateful behviour between different variables (?company, ?p1 and ?p2) among GPM expressions; second, the filter clause as utilised in the SPARQL; third the <tt> partition-by</tt> caluse. Due to space restriction we do not provide the details of the semantics of partition-by clause. However, it provides an important funtionality for SCEP application: events are typically partitioned by certain attributes and pattern detection usually becomes meaningful after partitioning them. We explain it through an example. Consider the above mentioned query is registered on the stock market stream where events from multiple different companies arrives in the stream. As we are only interested in V-shapped pattern for each distinct company, partitioning the stream my the ?company variable only consider the V-shapped pattern of each distinct mapping of ?company variable. Thus, its semantics are similar to the <tt>GROUP BY</tt> clause of SPARQL, where the mappings are first gruoped and then aggregates are applied on them. Although pattern-by operator does not add to the expressiveness, it provides a more concrete syntax for complex queries and optimisation opportunities at system level. </p>
+<h3>Inventory Management</h3>
+  <i> Consider a system monitoring the status (surgical usage, recycling etc.) of equipments in a hospital by using various RFID sensors. Then we can constrcut critical alerts, such that if a surgical tool is washed/recycled and is put back into the use without being first disinfected, then inform the administrator.</i><br><br>
+
+  The above use case requires the non-occurrence of an event by using a negation operator in the sequence expression (i.e., not disinfected). The results of such query can be composed using a <tt>CONSTRUCT</tt> clause from SPARQL; the query of this use case is described below.
+
+  <h4> Query 2 </h4>
+  <code>
+CONSTRUCT<br>
+{<br>
+?inst :usedIn ?uroomID.<br>
+?inst :hasName ?name.<br>
+?inst :usedBy ?e.<br>
+?e :employeeName ?eNameC.<br>
+?e :employeeID ?eIDC.<br>
+}<br>
+WITHIN 24 hours<br>
+FROM STREAM S1 &#60;http://hospital.org/instrumentRFID&#62<br>
+ WHERE<br>
+{<br>
+SEQ (A, B!, C)<br>
+DEFINE GPM A ON S1 {<br>
+?inst :hasRoom ?roomID.<br>
+?inst :hasName ?name<br>
+?inst :hasStatus ?statusA.<br>
+Filter (?statusA = ‘recycle’^^xsd:string)<br>
+}<br>
+
+
+DEFINE GPM B ON S1<br>
+?inst :hasStatus ?statusB.<br>
+Filter (?statusB = ‘disinfected’^^xsd:string)<br>
+}<br>
+
+DEFINE GPM C ON S1 {<br>
+?inst :hasStatus ?statusC.<br>
+?inst :usedIn ?uroomID.<br>
+?inst :usedBy ?e.<br>
+Graph &#60;http://www.example.com/background/Knoweldge&#62<br>
+{<br>
+?e :employeeID ?eIDC.<br>
+?e :employeeName ?eNameC<br>
+}<br>
+Filter (?statusC = ‘To be used’^^xsd:string)<br>
+}<br>
+}<br>
+  </code><br>
+<p>Query 2 presents two important features: first, the use of <tt> CONSTRUCT</tt> clause to produce new stream; second the use of the background knowledge to enrich the response of certain events. Query 2 consists of three GPM expression: the first clause (<tt>GPM A ON S1</tt>) determines the “recycling” status of an instrument and room ID of such operation. The second expression (<tt>GPM B ON S1</tt>) uses the stateful variable (?inst) to determine the current status of the same instrument. The third GPM expression (<tt>GPM C ON S1</tt>) uses the same stateful variable (?inst), and a set of triple patterns for static background knowledge within a <tt>GRAPH</tt> clause to extract the knowledge about the room and a person involved with such events.</p>
+<h1>Un-supported Features</h1>
+<p>Currently we do not support the <tt>UNION</tt>, <tt>OPTIONAL</tt> features for GPM expressions. Aggregates are allowed in SPAseq, however, we are currently working on it efficient implementation. For future version, we are also considering to allow hetergenous static background sources for the set of GPM expressions. Furthermore, additional operators for sequence expressions, such as AND (<tt>SEQ (A, (B&#8743;C),D)</tt>) and OR (<tt>SEQ (A,(B&#8744;C),D)</tt>) will be supported in the next version.</p>
+>>>>>>> Stashed changes
+
+<h1> SPAseq Sources</h1>
+<p>We have implemented our system in Java, which means it can simply be run on the Java Virtual Machine <b>(requirement: 64-bit JDK 8 or higher version)</b>. We wanted to make sure that users do not have to install any third party libraries. Therefore, we have packaged our system with all necessary dependencies including the complete query parser, input file parser and both query engines. This explains the large size of the JAR. Our system accept the input stream file of the Nx format, where x = Triples, Quads, or any other number. For more details see the specification for the <a href="https://www.w3.org/TR/n-quads/">NQuads format</a>, a extension for the <a href="http://www.w3.org/TR/rdf-testcases/#ntriples">N-Triples</a> RDF format. Note that the parser handles any combination (cf. <a href="http://www.w3.org/TR/rdf11-concepts/#section-generalized-rdf">generalised triples</a> or number of N-Triples syntax terms on each line (the number of terms per line can also vary).
 
 </p>
 
