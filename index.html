@@ -89,8 +89,8 @@ SPAseq Query Language
  
   <p> Our goal is to make both offline and online application of SPAseq as simple as possible for other users. This allows them to easily apply SPAseq to their own data streams and facilitates reproduction of our evaluation. Therefore, we provide an easy-to-run executable of SPAseq. The source code of our system will be avialable after the reviewing process.</p>
 
-  <h1> Supported Features</h1>
-  <p>In our paper, we briefly dicussed all the supported feature of our language; here we describe them with complete examples and uses cases.  </p>
+
+  <p>In our paper, we briefly dicussed all the features of our language; here we describe them with complete examples and uses cases.  </p>
 <h3>V-Shaped Pattern</h3>
   <i> A query with V-shaped temporal pattern describes the sequence of values that go down to a local minimum, then rising up to a local maximum, which was higher than the starting value.</i><br><br>
 
@@ -195,8 +195,9 @@ Filter (?statusC = ‘To be used’^^xsd:string)<br>
 }<br>
   </code><br>
 <p>Query 2 presents two important features: first, the use of <tt> CONSTRUCT</tt> clause to produce new stream; second the use of the background knowledge to enrich the response of certain events. Query 2 consists of three GPM expression: the first clause (<tt>GPM A ON S1</tt>) determines the “recycling” status of an instrument and room ID of such operation. The second expression (<tt>GPM B ON S1</tt>) uses the stateful variable (?inst) to determine the current status of the same instrument. The third GPM expression (<tt>GPM C ON S1</tt>) uses the same stateful variable (?inst), and a set of triple patterns for static background knowledge within a <tt>GRAPH</tt> clause to extract the knowledge about the room and a person involved with such events.</p>
-<h1>Un-supported Features</h1>
-<p>Currently we do not support the <tt>UNION</tt>, <tt>OPTIONAL</tt> features for GPM expressions. Aggregates are allowed in SPAseq, however, we are currently working on it efficient implementation. For future version, we are also considering to allow hetergenous static background sources for the set of GPM expressions. Furthermore, additional operators for sequence expressions, such as AND (<tt>SEQ (A, (B&#8743;C),D)</tt>) and OR (<tt>SEQ (A,(B&#8744;C),D)</tt>) will be supported in the next version.</p>
+
+<p></p>
+
 
 <div align="justify" id='spsources'><a name='spsources'></a>
 <h1> SPAseq Sources</h1>
