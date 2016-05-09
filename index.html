@@ -71,7 +71,7 @@ SPAseq Query Language
           <li><a href="index.html#tcreport">Technical Reports (*new*)</a></li>
            <li><a href="index.html#spsources">SPAseq Sources</a></li>
           <li><a href="index.html#grammar">Grammar</a></li>
-          <li><a href="index.html#dataset">Dataset Generator</a></li>
+          <li><a href="index.html#dataset">Dataset Generators</a></li>
           <li><a href="index.html#experiments">Experiments</a></li>
         </ul>
       </section>
@@ -242,7 +242,7 @@ Filter (?statusC = ‘To be used’^^xsd:string)<br>
 <div id='tcreport'><a name='tcreport'></a>
 
  <h1> Tehcnical Reports </h1>
-  <p> Please fine below our two technical reports describing our system for continously stream processing over RDF Graph Streams </p>
+  <p> Please find below our two technical reports describing our system for continously stream processing over RDF Graph Streams </p>
 <p> <b>Continuous Graph Pattern Matching over Knowledge Graph Streams , Syed Gillani, Gauthier Picard, Frederique Laforest. In 10th ACM International Conference on Distributed and Event-based Systems (DEBS) 2016, Irvine, CA, USA. </b> <a href="./docfiles/tc-kg-streams.pdf">PDF</a> </p>
 
 <p> <b>SPECTRA: Continuous Query Processing for RDF Graph Streams Over Sliding Windows , Syed Gillani, Gauthier Picard, Frederique Laforest. Technical Report Labortoire Hubert Curien. </b> <a href="./docfiles/tc-stream-processing.pdf">PDF</a> </p>
@@ -266,7 +266,24 @@ Filter (?statusC = ‘To be used’^^xsd:string)<br>
 <div id='experiments'><a name='experiments'></a>
 
  <h1> Experiments </h1>
-  <p> Here we first describe the queries used in our experiments and then provide more results and details about the experiemnts </p>
+  <p> Due to the space restrictions, in our paper, we do not provide further comparitive analysis of EP-SPARQL and SPAseq on the other datasets. Here, we use <a href="https://code.google.com/archive/p/lsbench/">LSBench benchmark dataset </a> , a well known RDF stream benchmark, which contains synthetic data about social network activities. We generated the dataset using the sibgenerator utility with 1 million users specified as the input parameter. The generated dataset has a static and a streaming component. The static component refers to the social network with user profiles and social network relationships. The streaming component includes three streams. The Post, GPS stream and Comments stream: the content of the streams is self- descriptive.</p>
+
+  <p>  For comparative analysis, we used three different extended forms of query Q4 from the LSBench benchmark: it is the only query in the benchmark that describes the sequencing semantic. It notifies the sequence of posts that have the same hash tag and are posted by the same user. The three different extensions of Q4 are as follows, (1) the standard query Q4 based on the triple stream semantics with four sequence patterns; (2) extended form of Q4 denoted as Q4*, by using an RDF graph-based stream, i.e each event contains a whole post (around 8-12 triples), instead of
+one triple from a post. This reduces the Q4 from four to two sequence constructs for the SPAseq. (3) extended form of Q4 with 2
+to 8 sequence patterns (for the triple streams).</p>
+
+<figure>
+  <img src="./docfiles/exp1.jpg" alt="exp1" width="504" height="328">
+   <figcaption>Figure 1: Throughput analysis (triples per second) (log-scale), Q4 and Q4* on LSBench by varying window size (seconds)</figcaption>
+</figure>
+
+
+<figure>
+  <img src="./docfiles/exp2.jpg" alt="exp2" width="504" height="328">
+   <figcaption>Figure 2: Throughput analysis (triples per second) (log-scale), Q4 on LSBench by varying the number of Sequence constructs</figcaption>
+</figure>
+
+
 
   </div>
 
