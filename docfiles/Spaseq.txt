@@ -91,9 +91,9 @@ unitTime
     : (MINUTES|HOURS|SECONDS)
     ;  
 whereClause
-    : WHERE?  seqBlock '{' (pattBlock)+ '}'  //Over Here, First add the SEQ block then the Event Patt block
+    : WHERE?  seqBlock '{' (pattBlock)+ '}' 
     ;
-//////////////////////////////////New Parts//////////////////////////
+
 seqBlock
     :  SEQUENCE seqConstraints
     ; 
