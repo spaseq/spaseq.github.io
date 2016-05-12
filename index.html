@@ -219,6 +219,7 @@ Filter (?statusC = ‘To be used’^^xsd:string)<br>
 
  -st,--streamtype &#60;arg&#62;    Stream type for multiple streams, true: for random generation of events, false: for sequential-based generation<br>
 
+ -kb,--knbase &#60;arg&#62;    optional external KB file in N-Triples format <br>
 
   -h,--help               show help<br>
 
@@ -229,7 +230,7 @@ Filter (?statusC = ‘To be used’^^xsd:string)<br>
 
 
 
-<p><br>An Example of the usage is as follows:<br> <code>java -jar spaseq.jar -s ./streamset.stream -q ./SHDQ1.q -st true</code></p>
+<p><br>An Example of the usage is as follows:<br> <code>java -jar spaseq.jar -s ./streamset.stream -q ./SHDQ1.q -st true -kb  ./kb.nt</code></p>
 
 <p> The first option describes how many triples should be parsed into one event. The second option describes if the streams are processed with event-based processing model or with incremental one. Then we have paths for the input file and query, finally the window option describe the size of the window in seconds. The output matches are stored in the <code>./result/queryResult1.txt</code>. The folder named <code>./result</code> should be placed in the same directory of the jar </p>
 <p><b>Note: </b> For large reservoir sizes, it makes sense to increase the JVM heap size (eg. <code>-Xmx4096M</code>) and use a concurrent garbage collector (<code>-XX:+UseConcMarkSweepGC</code>) since the concept of repeated creation/destroying of event-data may pose a challenge to garbage collection.
