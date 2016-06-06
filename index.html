@@ -95,57 +95,38 @@ SPAseq Query Language
   <i> A query with V-shaped temporal pattern describes the sequence of values that go down to a local minimum, then rising up to a local maximum, which was higher than the starting value.</i><br><br>
 
 This uses case was described in detail in pur paper, here we use the stock-marked based query to showcase how it is written in SPAseq.<br>
-<h4> Query 1 </h4>
-<code>
-
-                        prefix c: &#60;http://example/company#&#62 <br>
-
-                        prefix pred: &#60;http://example/&#62<br>
-
-                      SELECT ?company ?p1 ?p2 ?p3 ?vol1 ?vol2 ?vol3 <br>
-                         WITHIN 10 SECONDS <br>
-                      partition by (?company)  <br>
-                 FROM STREAM S1 &#60;http://example.org/main&#62 <br>
-
-                        WHERE <br>
-                         SEQ (A, B, C)<br>
-                           {<br>
-              DEFINE GPM A ON S1<br>
-
-                 { <br>
-                        ?company pred:price ?p1.<br>
-                          ?company pred:volume ?vol1. <br>
-
-                         } <br>
-
-
-                                DEFINE GPM B ON S1<br>
-
-                  {<br>
-
-                          ?company pred:price ?p2.<br>
-                          ?company pred:volume ?vol2. <br>
-
-                             Filter (?p2 < ?p1 )<br>
-
-                             }<br>
+<h3> Query 1 </h3>
+<pre style="background:#000;color:#f8f8f8"><span style="color:#e28964">PREFIX </span> c: <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span>example<span style="color:#e28964">/</span>company<span style="color:#aeaeae;font-style:italic">#> </span>
+<span style="color:#e28964">PREFIX </span> pred: <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span>example<span style="color:#e28964">/</span><span style="color:#e28964">></span>
+<span style="color:#e28964">SELECT</span> ?company ?p1 ?p2 ?p3 ?vol1 ?vol2 ?vol3 
+<span style="color:#e28964">WITHIN </span> <span style="color:#3387cc">10</span> SECONDS 
+<span style="color:#e28964">PARTITON BY</span> (?company) 
+<span style="color:#e28964">FROM STREAM </span> S1 <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span><span style="color:#3387cc">example</span>.<span style="color:#3387cc">org</span><span style="color:#e28964">/</span>main<span style="color:#e28964">></span> 
+<span style="color:#e28964">WHERE</span> 
+<span style="color:#e28964">SEQ </span>(A, B, C)
+{
+<span style="color:#e28964">DEFINE GPM </span> A <span style="color:#e28964">ON</span> S1
+{ 
+?company pred:price ?p1.
+?company pred:volume ?vol1. 
+} 
+<span style="color:#e28964">DEFINE GPM </span> B <span style="color:#e28964">ON</span> S1
+{
+?company pred:price ?p2.
+?company pred:volume ?vol2. 
+Filter (?p2 <span style="color:#e28964">&lt;</span> ?p1 )
+}
+<span style="color:#e28964">DEFINE GPM </span> C <span style="color:#e28964">ON</span> S1
+{
+?company pred:price ?p3.
+?company pred:volume ?vol3. 
+Filter (?p3 <span style="color:#e28964">></span> ?p2 &amp;&amp; ?p3 <span style="color:#e28964">></span> ?p1). 
+}
+}
+</pre>
 
 
 
-                                DEFINE GPM C ON S1<br>
-
-                  {<br>
-
-                          ?company pred:price ?p3.<br>
-                          ?company pred:volume ?vol3. <br>
-
-                            Filter (?p3 > ?p2 && ?p3 > ?p1).  <br>
-                             }<br>
-
-
-              }<br>
-
-</code><br>
 
 <p> The Query 1 showcase three important features of the SPAseq: first, the stateful behviour between different variables (?company, ?p1 and ?p2) among GPM expressions; second, the filter clause as utilised in the SPARQL; third the <tt> partition-by</tt> caluse. Due to space restriction we do not provide the details of the semantics of partition-by clause. However, it provides an important funtionality for SCEP application: events are typically partitioned by certain attributes and pattern detection usually becomes meaningful after partitioning them. We explain it through an example. Consider the above mentioned query is registered on the stock market stream where events from multiple different companies arrives in the stream. As we are only interested in V-shapped pattern for each distinct company, partitioning the stream my the ?company variable only consider the V-shapped pattern of each distinct mapping of ?company variable. Thus, its semantics are similar to the <tt>GROUP BY</tt> clause of SPARQL, where the mappings are first gruoped and then aggregates are applied on them. Although pattern-by operator does not add to the expressiveness, it provides a more concrete syntax for complex queries and optimisation opportunities at system level. </p>
 <h3>Inventory Management</h3>
@@ -153,47 +134,43 @@ This uses case was described in detail in pur paper, here we use the stock-marke
 
   The above use case requires the non-occurrence of an event by using a negation operator in the sequence expression (i.e., not disinfected). The results of such query can be composed using a <tt>CONSTRUCT</tt> clause from SPARQL; the query of this use case is described below.
 
-  <h4> Query 2 </h4>
-  <code>
-CONSTRUCT<br>
-{<br>
-?inst :usedIn ?uroomID.<br>
-?inst :hasName ?name.<br>
-?inst :usedBy ?e.<br>
-?e :employeeName ?eNameC.<br>
-?e :employeeID ?eIDC.<br>
-}<br>
-WITHIN 24 hours<br>
-FROM STREAM S1 &#60;http://hospital.org/instrumentRFID&#62<br>
- WHERE<br>
-{<br>
-SEQ (A, B!, C)<br>
-DEFINE GPM A ON S1 {<br>
-?inst :hasRoom ?roomID.<br>
-?inst :hasName ?name<br>
-?inst :hasStatus ?statusA.<br>
-Filter (?statusA = ‘recycle’^^xsd:string)<br>
-}<br>
-
-
-DEFINE GPM B ON S1<br>
-?inst :hasStatus ?statusB.<br>
-Filter (?statusB = ‘disinfected’^^xsd:string)<br>
-}<br>
-
-DEFINE GPM C ON S1 {<br>
-?inst :hasStatus ?statusC.<br>
-?inst :usedIn ?uroomID.<br>
-?inst :usedBy ?e.<br>
-Graph &#60;http://www.example.com/background/Knoweldge&#62<br>
-{<br>
-?e :employeeID ?eIDC.<br>
-?e :employeeName ?eNameC<br>
-}<br>
-Filter (?statusC = ‘To be used’^^xsd:string)<br>
-}<br>
-}<br>
-  </code><br>
+  <h3> Query 2 </h3>
+  <pre style="background:#000;color:#f8f8f8"><span style="color:#e28964">CONSTRUCT</span>
+{
+?inst :usedIn ?uroomID.
+?inst :hasName ?name.
+?inst :usedBy ?e.
+?e :employeeName ?eNameC.
+?e :employeeID ?eIDC.
+}
+<span style="color:#e28964">WITHIN </span> <span style="color:#3387cc">24</span> hours
+<span style="color:#e28964">FROM STREAM </span> S1 <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span><span style="color:#3387cc">hospital</span>.<span style="color:#3387cc">org</span><span style="color:#e28964">/</span>instrumentRFID<span style="color:#e28964">></span>
+<span style="color:#e28964">WHERE</span>
+{
+<span style="color:#e28964">SEQ </span>(A, B!, C)
+<span style="color:#e28964">DEFINE GPM </span>A <span style="color:#e28964">ON</span> S1 {
+?inst :hasRoom ?roomID.
+?inst :hasName ?name
+?inst :hasStatus ?statusA.
+Filter (?statusA <span style="color:#e28964">=</span> ‘recycle’^^xsd:string)
+}
+<span style="color:#e28964">DEFINE GPM </span> B <span style="color:#e28964">ON</span> S1
+?inst :hasStatus ?statusB.
+Filter (?statusB <span style="color:#e28964">=</span> ‘disinfected’^^xsd:string)
+}
+<span style="color:#e28964">DEFINE GPM </span>C <span style="color:#e28964">ON</span> S1 {
+?inst :hasStatus ?statusC.
+?inst :usedIn ?uroomID.
+?inst :usedBy ?e.
+Graph <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span><span style="color:#3387cc">www</span>.<span style="color:#3387cc">example</span>.com<span style="color:#e28964">/</span>background<span style="color:#e28964">/</span>Knoweldge<span style="color:#e28964">></span>
+{
+?e :employeeID ?eIDC.
+?e :employeeName ?eNameC
+}
+Filter (?statusC <span style="color:#e28964">=</span> ‘To be used’^^xsd:string)
+}
+}
+</pre>
 <p>Query 2 presents two important features: first, the use of <tt> CONSTRUCT</tt> clause to produce new stream; second the use of the background knowledge to enrich the response of certain events. Query 2 consists of three GPM expression: the first clause (<tt>GPM A ON S1</tt>) determines the “recycling” status of an instrument and room ID of such operation. The second expression (<tt>GPM B ON S1</tt>) uses the stateful variable (?inst) to determine the current status of the same instrument. The third GPM expression (<tt>GPM C ON S1</tt>) uses the same stateful variable (?inst), and a set of triple patterns for static background knowledge within a <tt>GRAPH</tt> clause to extract the knowledge about the room and a person involved with such events.</p>
 
 <p></p>
