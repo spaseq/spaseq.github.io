@@ -21,7 +21,7 @@
 ############## ############## ############## ############## 
 Multi Stream Execution over the test data and queries:
 ############## ############## ############## ############## 
-The query folder contains the test queries for the SHD usecase. The stream folder contains the set of streams in .nt format and a stream file which describes the IRIs of each stream and their filepaths: this file is used to send the streams to the spaseq engine. Furthremore, an external knowldge-base static file can be used to enrich each event (such file is not the part of the experiments).
+The query folder contains the test queries for the SHD usecase. The stream folder contains the set of streams in .nt format and a stream file which describes the IRIs of each stream and their filepaths: this file is used to send the streams to the spaseq engine. Furthremore, an external knowldge-base static file can be used to enrich each event (such file is not the part of the experiments). Note that, we have also included the option to use the source timestamps instead of system timestamps with optional option -t false. The file timestampStock.nt contains the events with the timestamps as an RDF triple. 
 
 To process the smart home streams and queries use the following command.
 
