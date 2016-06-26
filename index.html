@@ -70,6 +70,7 @@ SPAseq Query Language
           <li><a href="index.html#overview">Overview</a></li>
           <li><a href="index.html#tcreport">Technical Reports (*new*)</a></li>
            <li><a href="index.html#spsources">SPAseq Sources</a></li>
+            <li><a href="index.html#conjdisj">Conjunction and Disjunction (*new*)</a></li>
           <li><a href="index.html#grammar">Grammar</a></li>
           <li><a href="index.html#dataset">Dataset Generators</a></li>
           <li><a href="index.html#experiments">Experiments</a></li>
@@ -225,6 +226,83 @@ Filter (?statusC <span style="color:#e28964">=</span> ‘To be used’^^xsd:stri
 
 <p> <b>SPECTRA: Continuous Query Processing for RDF Graph Streams Over Sliding Windows , Syed Gillani, Gauthier Picard, Frederique Laforest. In 28th International Conference on Scientific and Statistical Database Management (SSDBM) 2016, Budapest, Hungary. (Accepted) </b> <a href="./docfiles/tc-stream-processing.pdf">PDF</a> </p>
   </div>
+
+
+
+
+
+
+<div id='conjdisj'><a name='conjdisj'></a>
+
+ <h1> Conjunction and Disjunction </h1>
+  <p> The conjunction operator determines whether two events <tt>u</tt> and <tt>v</tt> -- that are matched to graph pattern <tt>P1</tt> and <tt>P2</tt> -- occurs at the same time. Two events are said to occur at the same time if their timestamps overlaps. The conjunction of events is described in the sequence expression using the operator (<tt><></tt>). That is, the sequence expression <tt>SEQ (A ,(B<>C), D)</tt> depicts that events matched to the <tt>GPM A</tt> is immediately followed-by the conjunction of events matched to the <tt>GPM B</tt> and <tt>GPM C</tt>, and immediately followed-by and event matched to the <tt>GPM C</tt>. The following query descibes the conjunction of events for the stock market-based events </p>
+
+
+<pre style="background:#000;color:#f8f8f8"><span style="color:#e28964">PREFIX </span> c: <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span>example<span style="color:#e28964">/</span>company<span style="color:#aeaeae;font-style:italic">#> </span>
+<span style="color:#e28964">PREFIX </span> pred: <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span>example<span style="color:#e28964">/</span><span style="color:#e28964">></span>
+<span style="color:#e28964">SELECT</span> ?company ?p1 ?p2 ?p3 ?vol1 ?vol2 ?vol3 
+<span style="color:#e28964">WITHIN </span> <span style="color:#3387cc">10</span> SECONDS 
+<span style="color:#e28964">PARTITON BY</span> (?company) 
+<span style="color:#e28964">FROM STREAM </span> S1 <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span><span style="color:#3387cc">example</span>.<span style="color:#3387cc">org</span><span style="color:#e28964">/</span>main<span style="color:#e28964">></span> 
+<span style="color:#e28964">WHERE</span> 
+<span style="color:#e28964">SEQ </span>(A, (B <> C))
+{
+<span style="color:#e28964">DEFINE GPM </span> A <span style="color:#e28964">ON</span> S1
+{ 
+?company pred:price ?p1.
+?company pred:volume ?vol1. 
+} 
+<span style="color:#e28964">DEFINE GPM </span> B <span style="color:#e28964">ON</span> S1
+{
+?company pred:price ?p2.
+?company pred:volume ?vol2. 
+Filter (?p2 <span style="color:#e28964">&lt;</span> ?p1 )
+}
+<span style="color:#e28964">DEFINE GPM </span> C <span style="color:#e28964">ON</span> S1
+{
+?company pred:price ?p3.
+?company pred:volume ?vol3. 
+Filter (?p3 <span style="color:#e28964">></span> ?p2 &amp;&amp; ?p3 <span style="color:#e28964">></span> ?p1). 
+}
+}
+</pre>
+
+<p> The disjunction operator determines whether an event from a set of events -- related through the disjunction operator -- occurs without having any constraints over the timestamps or order. Thus, a sequence expression with disjunction operators <tt>SEQ (A ,(B|C), D)</tt> depicts that events matched to the <tt>GPM A</tt> is immediately followed-by the conjunction of events matched to either <tt>GPM B</tt> or <tt>GPM C</tt>, and immediately followed-by and event matched to the <tt>GPM D</tt>.</p>
+
+<pre style="background:#000;color:#f8f8f8"><span style="color:#e28964">PREFIX </span> c: <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span>example<span style="color:#e28964">/</span>company<span style="color:#aeaeae;font-style:italic">#> </span>
+<span style="color:#e28964">PREFIX </span> pred: <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span>example<span style="color:#e28964">/</span><span style="color:#e28964">></span>
+<span style="color:#e28964">SELECT</span> ?company ?p1 ?p2 ?p3 ?vol1 ?vol2 ?vol3 
+<span style="color:#e28964">WITHIN </span> <span style="color:#3387cc">10</span> SECONDS 
+<span style="color:#e28964">PARTITON BY</span> (?company) 
+<span style="color:#e28964">FROM STREAM </span> S1 <span style="color:#e28964">&lt;</span>http:<span style="color:#e28964">/</span><span style="color:#e28964">/</span><span style="color:#3387cc">example</span>.<span style="color:#3387cc">org</span><span style="color:#e28964">/</span>main<span style="color:#e28964">></span> 
+<span style="color:#e28964">WHERE</span> 
+<span style="color:#e28964">SEQ </span>(A, (B | C))
+{
+<span style="color:#e28964">DEFINE GPM </span> A <span style="color:#e28964">ON</span> S1
+{ 
+?company pred:price ?p1.
+?company pred:volume ?vol1. 
+} 
+<span style="color:#e28964">DEFINE GPM </span> B <span style="color:#e28964">ON</span> S1
+{
+?company pred:price ?p2.
+?company pred:volume ?vol2. 
+Filter (?p2 <span style="color:#e28964">&lt;</span> ?p1 )
+}
+<span style="color:#e28964">DEFINE GPM </span> C <span style="color:#e28964">ON</span> S1
+{
+?company pred:price ?p3.
+?company pred:volume ?vol3. 
+Filter (?p3 <span style="color:#e28964">></span> ?p2 &amp;&amp; ?p3 <span style="color:#e28964">></span> ?p1). 
+}
+}
+</pre>
+<p> </p>
+  </div>
+
+
+
+
 
 <div id='grammar'><a name='grammar'></a>
 
